@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require("cors");
 const allRoutes = require('./controllers');
 
 const sequelize = require('./config/connection');
@@ -6,6 +7,8 @@ const sequelize = require('./config/connection');
 // Sets up the Express App
 // =============================================================
 const app = express();
+//DEVELOP MODE
+app.use(cors());
 const PORT = process.env.PORT || 3001;
 // Requiring our models for syncing
 const { User,Note,Game} = require('./models');

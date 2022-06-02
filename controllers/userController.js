@@ -4,14 +4,20 @@ const {User,Game,Note} = require('../models');
 const jwt = require("jsonwebtoken")
 require("dotenv").config()
 const bcrypt = require("bcrypt");
+const {withAuth} = require("../utils/tokenAuth")
 
 router.get("/",(req,res)=>{
-    User.findAll().then(users=>{
+    User.findAll({
+        include:[Game]
+    }).then(users=>{
         res.json(users)
     }).catch(err=>{
         console.log(err);
         res.status(500).json({msg:"an error occured",err})
     })
+})
+router.get("/verifyToken",withAuth,(req,res)=>{
+    res.json({userId:req.user})
 })
 router.get("/:id",(req,res)=>{
     User.findByPk(req.params.id,{
