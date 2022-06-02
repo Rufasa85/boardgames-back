@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {User,Game,Note} = require('../models');
+const {withAuth} = require("../utils/tokenAuth")
 
 router.get("/",(req,res)=>{
     Note.findAll().then(notes=>{
@@ -24,9 +25,12 @@ router.get("/:id",(req,res)=>{
     })
 })
 
-router.post("/",(req,res)=>{
-    //TODO: protecc route, get UserId from token
-    Note.create(req.body).then(newNote=>{
+router.post("/",withAuth,(req,res)=>{
+    Note.create({
+        note:req.body.note,
+        GameId:req.body.GameId,
+        UserId:req.user
+    }).then(newNote=>{
         res.json(newNote)
     }).catch(err=>{
         console.log(err);
@@ -34,11 +38,11 @@ router.post("/",(req,res)=>{
     })
 })
 
-router.put("/:id",(req,res)=>{
-     //TODO: protecc route, get UserId from token, ensure belongs to logged in user
+router.put("/:id",withAuth,(req,res)=>{
      Note.update(req.body,{
          where:{
-             id:req.params.id
+             id:req.params.id,
+             UserId:req.user
          }
      }).then(updatedNote=>{
         if(!updatedNote[0]){
@@ -51,11 +55,11 @@ router.put("/:id",(req,res)=>{
     })
 })
 
-router.delete("/:id",(req,res)=>{
-    //TODO: protecc route, ensure is logged in users
+router.delete("/:id",withAuth,(req,res)=>{
     Note.destroy({
         where:{
-            id:req.params.id
+            id:req.params.id,
+            UserId:req.user
         }
     }).then(delNote=>{
         if(!delNote){

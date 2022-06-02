@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const {User,Game,Note} = require('../models');
+const jwt = require("jsonwebtoken")
+require("dotenv").config()
+const bcrypt = require("bcrypt");
 
 router.get("/",(req,res)=>{
     User.findAll().then(users=>{
@@ -25,15 +28,44 @@ router.get("/:id",(req,res)=>{
 })
 
 router.post("/",(req,res)=>{
-    //TODO: generate token
     User.create(req.body).then(newUser=>{
-        res.json(newUser)
+        const token = jwt.sign({
+            userId:newUser.id
+        },process.env.JWT_SECRET,{
+            expiresIn:"6h"
+        })
+        res.json({
+            user:newUser,
+            token:token
+        })
     }).catch(err=>{
         console.log(err);
         res.status(500).json({msg:"an error occured",err})
     })
 })
 
-//TODO: login route
+router.post("/login",(req,res)=>{
+    User.findOne({
+        where:{
+            username:req.body.username
+        }
+    }).then(foundUser=>{
+        if(!foundUser){
+            return res.status(401).json({msg:"invalid login credentials"})
+        }
+        if(bcrypt.compareSync(req.body.password,foundUser.password)){
+            const token = jwt.sign({
+                userId:foundUser.id
+            },process.env.JWT_SECRET,{
+                expiresIn:"6h"
+            })
+            return res.json({
+                user:foundUser,
+                token:token
+            })
+        }
+        return res.status(401).json({msg:"invalid login credentials"})
+    })
+})
 
 module.exports = router;
