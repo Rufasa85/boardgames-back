@@ -8,7 +8,7 @@ const sequelize = require('./config/connection');
 const app = express();
 const PORT = process.env.PORT || 3000;
 // Requiring our models for syncing
-// const { User} = require('./models');
+const { User,Note,Game} = require('./models');
 
 // Sets up the Express app to handle data parsing
 app.use(express.urlencoded({ extended: true }));
