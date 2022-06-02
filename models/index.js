@@ -5,8 +5,12 @@ const Note = require("./Note")
 User.hasMany(Game);
 Game.belongsTo(User);
 
-Game.hasMany(Note);
-Note.belongsTo(Game);
+Game.hasMany(Note,{
+    onDelete:"CASCADE"
+});
+Note.belongsTo(Game,{
+    onDelete:"CASCADE"
+});
 
 User.hasMany(Note);
 Note.belongsTo(User);

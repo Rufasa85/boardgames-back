@@ -1,5 +1,5 @@
 const express = require('express');
-// const allRoutes = require('./controllers');
+const allRoutes = require('./controllers');
 
 const sequelize = require('./config/connection');
 
@@ -14,10 +14,8 @@ const { User,Note,Game} = require('./models');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// app.use('/',allRoutes);
-app.get("/",(req,res)=>{
-    res.json('hello world!')
-})
+app.use('/',allRoutes);
+
 sequelize.sync({ force: false }).then(function() {
     app.listen(PORT, function() {
     console.log('App listening on PORT ' + PORT);
