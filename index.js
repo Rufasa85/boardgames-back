@@ -18,7 +18,7 @@ app.use(express.json());
 app.get("/",(req,res)=>{
     res.json('hello world!')
 })
-sequelize.sync({ force: true }).then(function() {
+sequelize.sync({ force: false }).then(function() {
     app.listen(PORT, function() {
     console.log('App listening on PORT ' + PORT);
     });
