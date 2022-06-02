@@ -9,6 +9,10 @@ const sequelize = require('./config/connection');
 const app = express();
 //DEVELOP MODE
 app.use(cors());
+//PROD MODE
+// app.use(cors({
+//     origin:"https://boardgames-front.herokuapp.com"
+// }));
 const PORT = process.env.PORT || 3001;
 // Requiring our models for syncing
 const { User,Note,Game} = require('./models');
